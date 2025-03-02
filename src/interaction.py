@@ -30,7 +30,7 @@ class FileManager(Operations):
         self._show_help()
         while True:
             try:
-                print(f"\nТекущий путь: {self.current_path}")
+                print(f"\nТекущий путь: {Fore.BLUE}{self.current_path}{Style.RESET_ALL}")
                 command = input(">>> ").strip().split()
                 self._show_help()
                 if not command:
