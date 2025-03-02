@@ -1,5 +1,6 @@
 import os
 import shutil
+import zipfile
 
 from config.settings import WORKING_DIRECTORY
 
@@ -122,5 +123,44 @@ class Operations:
             new_path = self._validate_path(os.path.join(self.current_path, new_name))
             os.rename(old_path, new_path)
             self._print_status(f"Переименован: {old_name} -> {new_name}")
+        except Exception as e:
+            self._print_status(str(e), success=False)
+    
+    def zip_file_or_folder(self, source: str, archive_name: str) -> None:
+        try:
+            source_path = self._validate_path(os.path.join(self.current_path, source))
+            archive_path = self._validate_path(os.path.join(self.current_path, archive_name))
+
+            if not os.path.exists(source_path):
+                raise FileNotFoundError(f"Файл или папка не найдены: {source}")
+
+            with zipfile.ZipFile(archive_path, 'w') as zipf:
+                if os.path.isdir(source_path):
+                    for root, dirs, files in os.walk(source_path):
+                        for file in files:
+                            file_path = os.path.join(root, file)
+                            arcname = os.path.relpath(file_path, start=source_path)
+                            zipf.write(file_path, arcname)
+                else:
+                    zipf.write(source_path, os.path.basename(source_path))
+
+            self._print_status(f"Создан архив: {archive_name}")
+        except Exception as e:
+            self._print_status(str(e), success=False)
+
+    def unzip_archive(self, archive_name: str, extract_to: str) -> None:
+        try:
+            archive_path = self._validate_path(os.path.join(self.current_path, archive_name))
+            extract_path = self._validate_path(os.path.join(self.current_path, extract_to))
+
+            if not os.path.exists(archive_path):
+                raise FileNotFoundError(f"Архив не найден: {archive_name}")
+
+            os.makedirs(extract_path, exist_ok=True)
+
+            with zipfile.ZipFile(archive_path, 'r') as zipf:
+                zipf.extractall(extract_path)
+
+            self._print_status(f"Архив {archive_name} разархивирован в {extract_to}")
         except Exception as e:
             self._print_status(str(e), success=False)

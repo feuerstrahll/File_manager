@@ -16,7 +16,9 @@ class FileManager(Operations):
             ("cp <файл> <папка>", "Копировать файл"),
             ("mv <файл> <папка>", "Переместить файл"),
             ("rename <старое> <новое>", "Переименовать файл"),
-            ("exit", "Выход")
+            ("exit", "Выход"),
+            ("zip <файл/папка> <архив>", "Создать ZIP-архив"),
+            ("unzip <архив> <папка>", "Разархивировать ZIP-архив")
         ]
 
 
@@ -32,7 +34,7 @@ class FileManager(Operations):
             try:
                 print(f"\nТекущий путь: {Fore.BLUE}{self.current_path}{Style.RESET_ALL}")
                 command = input(">>> ").strip().split()
-                self._show_help()
+
                 if not command:
                     continue
 
@@ -63,6 +65,10 @@ class FileManager(Operations):
                     self.move_file(args[0], args[1])
                 elif action == "rename" and len(args) == 2:
                     self.rename_file(args[0], args[1])
+                elif action == "zip" and len(args) == 2:
+                    self.zip_file_or_folder(args[0], args[1])
+                elif action == "unzip" and len(args) == 2:
+                    self.unzip_archive(args[0], args[1])
                 else:
                     print("Неверная команда. Введите 'help' для списка команд")
 
