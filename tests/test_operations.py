@@ -18,10 +18,26 @@ class TestOperations(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(self.ops.current_path, file_name)))
 
     def test_validate_path(self):
-        working_dir = self.ops.working_dir
-        self.ops._validate_path = working_dir
-        self.assertTrue(os.path.exists(os.path.join(self.ops.current_path)))
-                    
+        # Проверка допустимого пути
+        valid_path = os.path.join(self.ops.working_dir, "test_folder")
+        result = self.ops._validate_path(valid_path)
+        self.assertEqual(result, os.path.abspath(valid_path))
+
+        # Проверка недопустимого пути (выход за пределы рабочей директории)
+        invalid_path = os.path.abspath(os.path.join(self.ops.working_dir, "../hack"))
+        with self.assertRaises(PermissionError):
+            self.ops._validate_path(invalid_path)
+
+    def test_get_relative_path(self):
+        abs_path = os.path.join(self.ops.working_dir, "test_folder")
+        rel_path = self.ops._get_relative_path(abs_path)
+        self.assertEqual(rel_path, "test_folder")
+
+    def test_navigation_safety(self):
+        # Попытка выйти за пределы рабочей директории
+        with self.assertRaises(PermissionError):
+            self.ops.navigate("in", "../")
+                        
 
 if __name__ == "__main__":
     unittest.main()
