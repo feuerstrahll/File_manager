@@ -2,28 +2,45 @@ import os
 import shutil
 import zipfile
 
-from config.settings import WORKING_DIRECTORY
+from src.config.settings import WORKING_DIRECTORY
 
 class Operations:
     def __init__(self):
+        """
+        Инициализация рабочей директории.
+        Если директория не существует, она будет создана.
+        """
         self.working_dir = os.path.abspath(WORKING_DIRECTORY)
         os.makedirs(self.working_dir, exist_ok=True)
         self.current_path = self.working_dir
 
     def _validate_path(self, path: str) -> str:
+        """
+        Проверяет, что путь находится внутри рабочей директории.
+        Если путь выходит за пределы рабочей директории, выбрасывает исключение.
+        """
         abs_path = os.path.abspath(path)
         if not abs_path.startswith(self.working_dir):
             raise PermissionError("Выход за пределы рабочей директории запрещен")
         return abs_path
 
     def _get_relative_path(self, path: str) -> str:
+        """
+        Возвращает относительный путь относительно рабочей директории.
+        """
         return os.path.relpath(path, self.working_dir)
 
     def _print_status(self, message: str, success: bool = True) -> None:
+        """
+        Выводит сообщение о статусе операции.
+        """
         status = "Успешно" if success else "Ошибка"
         print(f"[{status}] {message}")
 
     def create_folder(self, folder_name: str) -> None:
+        """
+        Создает папку в текущей директории
+        """
         try:
             full_path = self._validate_path(os.path.join(self.current_path, folder_name))
             os.makedirs(full_path, exist_ok=True)
@@ -32,6 +49,9 @@ class Operations:
             self._print_status(str(e), success=False)
 
     def delete_folder(self, folder_name: str) -> None:
+        """
+        Удаляет папку в текущей директории 
+        """
         try:
             full_path = self._validate_path(os.path.join(self.current_path, folder_name))
             shutil.rmtree(full_path)

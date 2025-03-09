@@ -1,12 +1,15 @@
 from src.operations import Operations
 from colorama import Fore, Style
 
-class FileManager(Operations):  
+class FileManager(Operations):
     def __init__(self):
+        """
+        Инициализация файлового менеджера.
+        """
         super().__init__()
         self.commands = [
             ("mkdir <папка>", "Создать папку"),
-            ("rmdir <папка>", "Удалить папка"),
+            ("rmdir <папка>", "Удалить папку"),
             ("nav in <папка>", "Войти в папку"),
             ("nav up", "Выйти из папки"),
             ("touch <файл>", "Создать файл"),
@@ -21,13 +24,18 @@ class FileManager(Operations):
             ("unzip <архив> <папка>", "Разархивировать ZIP-архив")
         ]
 
-
     def _show_help(self) -> None:
+        """
+        Выводит список доступных команд.
+        """
         print(f"\n{Fore.GREEN}Доступные команды:{Style.RESET_ALL}")
         for cmd, desc in self.commands:
-            print(f"  {Fore.CYAN}{cmd.ljust(25)}{Style.RESET_ALL} {desc}") # #  "left justify" (выравнивание по левому краю). 25 — это общая длина, до которой будет расширена строка
+            print(f"  {Fore.CYAN}{cmd.ljust(25)}{Style.RESET_ALL} {desc}")
 
     def run(self) -> None:
+        """
+        Основной цикл взаимодействия с пользователем.
+        """
         print(f"\nФайловый менеджер рабочая директория: {self._get_relative_path(self.working_dir)}")
         self._show_help()
         while True:
@@ -74,4 +82,3 @@ class FileManager(Operations):
 
             except Exception as e:
                 self._print_status(f"Ошибка выполнения: {str(e)}", success=False)
-    
