@@ -18,7 +18,6 @@ class TestOperations(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(self.ops.current_path, file_name)))
 
     def test_validate_path(self):
-        # Проверка допустимого пути
         valid_path = os.path.join(self.ops.working_dir, "test_folder")
         result = self.ops._validate_path(valid_path)
         self.assertEqual(result, os.path.abspath(valid_path))

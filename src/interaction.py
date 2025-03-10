@@ -19,12 +19,13 @@ class FileManager(Operations):
             ("cp <файл> <папка>", "Копировать файл"),
             ("mv <файл> <папка>", "Переместить файл"),
             ("rename <старое> <новое>", "Переименовать файл"),
-            ("exit", "Выход"),
             ("zip <файл/папка> <архив>", "Создать ZIP-архив"),
-            ("unzip <архив> <папка>", "Разархивировать ZIP-архив")
+            ("unzip <архив> <папка>", "Разархивировать ZIP-архив"),
+            ("list", "Вывести текущие элементы директории"),
+            ("exit", "Выход")
         ]
 
-    def _show_help(self) -> None:
+    def show_help(self) -> None:
         """
         Выводит список доступных команд.
         """
@@ -36,8 +37,8 @@ class FileManager(Operations):
         """
         Основной цикл взаимодействия с пользователем.
         """
-        print(f"\nФайловый менеджер рабочая директория: {self._get_relative_path(self.working_dir)}")
-        self._show_help()
+        print(f"\nФайловый менеджер рабочая директория: {self.get_relative_path(self.working_dir)}")
+        self.show_help()
         while True:
             try:
                 print(f"\nТекущий путь: {Fore.BLUE}{self.current_path}{Style.RESET_ALL}")
@@ -52,7 +53,7 @@ class FileManager(Operations):
                 if action == "exit":
                     break
                 elif action == "help":
-                    self._show_help()
+                    self.show_help()
                 elif action == "mkdir" and len(args) == 1:
                     self.create_folder(args[0])
                 elif action == "rmdir" and len(args) == 1:
@@ -77,8 +78,10 @@ class FileManager(Operations):
                     self.zip_file_or_folder(args[0], args[1])
                 elif action == "unzip" and len(args) == 2:
                     self.unzip_archive(args[0], args[1])
+                elif action == "list":
+                    self.list_files()
                 else:
                     print("Неверная команда. Введите 'help' для списка команд")
 
             except Exception as e:
-                self._print_status(f"Ошибка выполнения: {str(e)}", success=False)
+                print(f"Ошибка выполнения: {str(e)}")
