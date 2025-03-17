@@ -1,0 +1,3 @@
+[submodule "subproject/File_manager"]
+	path = subproject/File_manager
+	url = https://github.com/feuerstrahll/File_manager
